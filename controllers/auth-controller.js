@@ -85,9 +85,35 @@ const logout = async (req, res) => {
     res.status(204).send();
 }
 
+const updateAvatars = async (req, res) => {
+    const { token } = req.user;
+    let avatarURL = req.user.avatarURL;
+    if (req.file) {
+        const { path: oldPath, filename } = req.file;
+        const newPath = path.join(avatarsPath, filename);
+        await fs.rename(oldPath, newPath);
+        avatarURL = path.join("avatars", filename);
+    }
+
+    const updatedUser = await User.findOneAndUpdate(
+        { token },
+        { avatarURL },
+        { new: true }
+    );
+
+    if (!updatedUser) {
+        throw HttpError(404, "User not found");
+    }
+
+    res.json({
+        avatarURL: updatedUser.avatarURL,
+    });
+}
+
 module.exports = {
     signup: ctrlWrapper(signup),
     signin: ctrlWrapper(signin),
     getCurrent: ctrlWrapper(getCurrent),
-    logout: ctrlWrapper(logout)
+    logout: ctrlWrapper(logout),
+    updateAvatars: ctrlWrapper(updateAvatars)
 }
