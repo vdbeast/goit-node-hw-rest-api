@@ -57,7 +57,7 @@ const verify = async (req, res) => {
         throw HttpError(404, "User not found")
     }
 
-    await User.findByIdAndUpdate(user._id ,{ verify: true, verificationToken: null });
+    await User.findByIdAndUpdate(user._id , { verify: true, verificationToken: null });
 
     res.json({
         message: "Verification successful",
@@ -79,7 +79,7 @@ const resendVerifyEmail = async (req, res) => {
     const verifyEmail = {
         to: email,
         subject: "Verify email",
-        html: `<a target="_blank" href="${BASE_URL}/api/auth/verify/${verificationToken}">Click to verify email</a>`
+        html: `<a target="_blank" href="${BASE_URL}/api/auth/verify/${user.verificationToken}">Click to verify email</a>`
     };
 
     await sendEmail(verifyEmail);
