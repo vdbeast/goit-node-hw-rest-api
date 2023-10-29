@@ -10,11 +10,16 @@ const upload = require('../../middlewares/upload.js')
 const resize = require('../../middlewares/resizeAvatars.js')
 
 const userSignupValidate = validateBody(userSchema.userSignupSchema);
-const userSigninValidate = validateBody(userSchema.userSigninSchema)
+const userSigninValidate = validateBody(userSchema.userSigninSchema);
+const userEmailValidate = validateBody(userSchema.userEmailSchema);
 
 const authRouter = express.Router()
 
 authRouter.post('/users/register', upload.single("avatarURL"), isEmptyBody, userSignupValidate, authControllers.signup)
+
+authRouter.get('/users/verify/:verificationToken', authControllers.verify)
+
+authRouter.post('/users/verify', userEmailValidate, authControllers.resendVerifyEmail)
 
 authRouter.post('/users/login', isEmptyBody, userSigninValidate, authControllers.signin)
 
