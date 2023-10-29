@@ -33,7 +33,7 @@ const signup = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, 10);
     const verificationToken = uuidv4();
 
-    const newUser = await User.create({ ...req.body, avatarURL, password: hashPassword });
+    const newUser = await User.create({ ...req.body, avatarURL, password: hashPassword, verificationToken });
 
     const verifyEmail = {
         to: email,
